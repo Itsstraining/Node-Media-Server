@@ -25,6 +25,13 @@ router.get("/live/:key", (req, res) => {
   ffstream.on("data", function (chunk) {
     res.write(chunk);
   });
+  req.on("close", () => {
+    console.log("Kill ffmpeg");
+    try {
+      command.kill("1");
+      ffstream.destroy();
+    } catch (e) {}
+  });
 });
 
 module.exports = router;
