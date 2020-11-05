@@ -28,7 +28,7 @@ router.get("/live/:key", (req, res) => {
   req.on("close", () => {
     console.log("Kill ffmpeg");
     try {
-      command.kill("1");
+      command.kill("SIGHUB");
       ffstream.destroy();
     } catch (e) {}
   });
