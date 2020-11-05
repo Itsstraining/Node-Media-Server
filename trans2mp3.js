@@ -1,37 +1,20 @@
 const express = require("express");
-const ffmpeg = require("fluent-ffmpeg");
-const fs = require("fs");
-const { spawn } = require("child_process");
-const path = require("path");
+
 const app = new express();
+const service = require("./ffmpeg.service");
 
-const router = new express.Router();
-
-const config = {
-  STREAM: "rtmp://0.0.0.0/live",
-};
-
-router.get("/live/:key", (req, res) => {
+app.get("/live/:key", (req, res) => {
   const { key } = req.params;
 
-  let command = ffmpeg(`${config.STREAM}${key}/${key}`)
-    .addInputOption("-re")
-    .addOutputOption("-f mp3");
-
-  let ffstream = command.pipe();
+  let conn = service.instance().createAndGet(key);
   res.set("content-type", "audio/mp3");
   res.set("accept-ranges", "bytes");
+
+  let ffstream = conn.stream;
 
   ffstream.on("data", function (chunk) {
     res.write(chunk);
   });
-  req.on("close", () => {
-    console.log("Kill ffmpeg");
-    try {
-      command.kill("SIGHUB");
-      ffstream.destroy();
-    } catch (e) {}
-  });
 });
 
-module.exports = router;
+module.exports = app;
