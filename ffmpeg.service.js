@@ -22,7 +22,7 @@ FfmpegService.prototype.createAndGet = function (channel) {
   let connId = this.list.findIndex((conn) => conn.channel == channel);
   if (connId == -1) {
     // Create new connection
-    let command = ffmpeg(`${config.STREAM}${channel}/${channel}`)
+    let command = ffmpeg(`${config.STREAM}/${channel}`)
       .addInputOption("-re")
       .addOutputOption("-f mp3");
     let ffstream = command.pipe();
