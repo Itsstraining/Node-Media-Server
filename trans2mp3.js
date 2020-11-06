@@ -7,7 +7,7 @@ app.get("/live/:key", (req, res) => {
   const { key } = req.params;
 
   let conn = service.instance().createAndGet(key);
-  res.set("content-type", "audio/mpeg");
+  res.set("content-type", "audio/mp3");
   res.set("accept-ranges", "bytes");
 
   let ffstream = conn.stream;
