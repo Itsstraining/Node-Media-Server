@@ -5,6 +5,9 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 RUN npm i
+#RUN apk add ppa:jonathonf/ffmpeg-4 
+#RUN apk update
+RUN apk add ffmpeg 
 
 COPY . .
 
