@@ -24,7 +24,8 @@ FfmpegService.prototype.createAndGet = function (channel) {
     // Create new connection
     let command = ffmpeg(`${config.STREAM}/${channel}`)
       .addInputOption("-re")
-      .addOutputOption("-f mp3");
+      .addOutputOption("-f mp3")
+      .addOutputOption("-b:a 64k");
     let ffstream = command.pipe();
     let conn = {
       channel: channel,
