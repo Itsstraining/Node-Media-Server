@@ -32,9 +32,11 @@ FfmpegService.prototype.createAndGet = function (channel) {
       stream: ffstream,
       command: command,
     };
+    console.log("Listen to new connection");
     this.list.push(conn);
     return conn;
   }
+  console.log("Listen to existed connection");
   return this.list[connId];
 };
 
@@ -43,6 +45,7 @@ FfmpegService.prototype.removeChannel = function (channel) {
   if (connId > -1) {
     this.list.splice(connId, 1);
   }
+  console.log(this.list);
 };
 
 module.exports = FfmpegService;
