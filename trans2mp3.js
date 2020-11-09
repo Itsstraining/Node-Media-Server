@@ -16,6 +16,11 @@ app.get("/live/:key", (req, res) => {
 
   ffstream.pipe(res);
 
+  conn.command.on("end", function (stdout, stderr) {
+    service.instance().removeChannel(conn.channel);
+    console.log(`Close Ended channel: ${conn.channel}`);
+  });
+
   ffstream.on("close", function () {
     service.instance().removeChannel(conn.channel);
     console.log(`Close channel: ${conn.channel}`);
