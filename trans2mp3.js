@@ -23,9 +23,9 @@ app.get("/live/:key", (req, res) => {
       service.instance().removeChannel(conn.channel);
       res.status(404).send({ message: "timeout" });
     }
-  }, 5000);
+  }, 30000);
 
-  ffstream.on("open", function (commandLine) {
+  ffstream.on("readable", function (commandLine) {
     console.log(`Start listening ${conn.channel}`);
     started = true;
   });
