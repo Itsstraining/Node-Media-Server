@@ -25,11 +25,6 @@ app.get("/live/:key", (req, res) => {
     }
   }, 30000);
 
-  ffstream.on("readable", function (commandLine) {
-    console.log(`Start listening ${conn.channel}`);
-    started = true;
-  });
-
   conn.command.on("end", function (stdout, stderr) {
     service.instance().removeChannel(conn.channel);
     console.log(`Close Ended channel: ${conn.channel}`);
