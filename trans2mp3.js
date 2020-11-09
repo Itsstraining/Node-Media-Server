@@ -12,13 +12,29 @@ app.get("/live/:key", (req, res) => {
   res.set("content-type", "audio/mp3");
   res.set("accept-ranges", "bytes");
 
+  let started = false;
   let ffstream = conn.stream;
 
   ffstream.pipe(res);
 
+  setTimeout(function () {
+    if (!started) {
+      console.log(`Connection timeout: ${conn.channel}`);
+    }
+  }, 5000);
+
+  conn.command.on("start", function (commandLine) {
+    console.log(`Start listening ${conn.channel}`);
+    started = true;
+  });
+
   conn.command.on("end", function (stdout, stderr) {
     service.instance().removeChannel(conn.channel);
     console.log(`Close Ended channel: ${conn.channel}`);
+  });
+  conn.command.on("error", function (err, stdout, stderr) {
+    service.instance().removeChannel(conn.channel);
+    console.log(`Close Error channel: ${conn.channel}`);
   });
 
   ffstream.on("close", function () {
