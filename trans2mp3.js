@@ -23,7 +23,7 @@ app.get("/live/:key", (req, res) => {
     }
   }, 5000);
 
-  conn.command.on("start", function (commandLine) {
+  ffstream.on("open", function (commandLine) {
     console.log(`Start listening ${conn.channel}`);
     started = true;
   });
