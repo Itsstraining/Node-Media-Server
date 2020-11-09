@@ -12,7 +12,7 @@ app.get("/live/:key", (req, res) => {
 
   let ffstream = conn.stream;
 
-  res.pipe(ffstream);
+  ffstream.pipe(res);
 
   // ffstream.on("close", function () {
 
