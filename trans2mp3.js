@@ -12,9 +12,11 @@ app.get("/live/:key", (req, res) => {
 
   let ffstream = conn.stream;
 
-  ffstream.on("data", function (chunk) {
-    res.write(chunk);
-  });
+  res.pipe(ffstream);
+
+  // ffstream.on("close", function () {
+
+  // });
 });
 
 module.exports = app;
