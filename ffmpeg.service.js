@@ -25,7 +25,7 @@ FfmpegService.prototype.createAndGet = function (channel) {
     let command = ffmpeg(`${config.STREAM}/${channel}`)
       .addInputOption("-re")
       .addOutputOption("-f mp3")
-      .addOutputOption(`-b:a 128k`);
+      .addOutputOption(`-b:a 32k`);
     let ffstream = command.pipe();
     let conn = {
       channel: channel,
@@ -36,6 +36,13 @@ FfmpegService.prototype.createAndGet = function (channel) {
     return conn;
   }
   return this.list[connId];
+};
+
+FfmpegService.prototype.removeChannel = function (channel) {
+  let connId = this.list.findIndex((conn) => conn.channel == channel);
+  if (connId > -1) {
+    this.list.splice(connId, 1);
+  }
 };
 
 module.exports = FfmpegService;
