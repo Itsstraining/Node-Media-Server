@@ -21,7 +21,7 @@ app.get("/live/:key", (req, res) => {
     if (!started) {
       console.log(`Connection timeout: ${conn.channel}`);
       service.instance().removeChannel(conn.channel);
-      res.end();
+      res.status(404).send({ message: "timeout" });
     }
   }, 5000);
 
