@@ -26,7 +26,6 @@ FfmpegService.prototype.createAndGet = function (channel) {
       .addInputOption("-re")
       .addOutputOption("-f mp3")
       .addOutputOption(`-b:a 32k`);
-    command.run();
     let ffstream = command.pipe();
 
     let conn = {
