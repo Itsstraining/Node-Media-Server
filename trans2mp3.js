@@ -12,7 +12,6 @@ app.get("/live/:key", (req, res) => {
   res.set("content-type", "audio/mp3");
   res.set("accept-ranges", "bytes");
 
-  let started = false;
   let ffstream = conn.stream;
 
   ffstream.pipe(res);
