@@ -37,8 +37,13 @@ FfmpegService.prototype.createAndGet = function (channel) {
     this.list.push(conn);
     return conn;
   }
+  let ffstream = this.list[connId].command.pipe();
   console.log("Listen to existed connection");
-  return this.list[connId];
+  return {
+    channel: channel,
+    stream: ffstream,
+    command: this.list[connId].command,
+  };
 };
 
 FfmpegService.prototype.removeChannel = function (channel) {
