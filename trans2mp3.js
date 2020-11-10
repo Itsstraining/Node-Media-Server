@@ -14,7 +14,7 @@ app.get("/live/:key", (req, res) => {
 
   let ffstream = conn.stream;
 
-  ffstream.pipe(res);
+  service.instance().updateStream(key, ffstream.pipe(res));
 });
 
 module.exports = app;
