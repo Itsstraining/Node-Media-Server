@@ -16,11 +16,11 @@ app.get("/live/:key", (req, res) => {
   let ffstream = conn.stream;
 
   //service.instance().updateStream(key, ffstream.pipe(res));
-  let pt = new Readable();
+  let pt = new ReadableStream();
   conn.passthrough.pipe(pt);
   //conn.passthrough.pipe(res);
   //readStream.pipe(res);
-  pt.pipe(res);
+  pt.pipeTo(res);
 });
 
 module.exports = app;
