@@ -2,7 +2,8 @@ const ffmpeg = require("fluent-ffmpeg");
 const fs = require("fs");
 const { spawn } = require("child_process");
 const path = require("path");
-const { Writable } = require("stream");
+const { Writable, Duplex } = require("stream");
+const { chunk } = require("lodash");
 const { Stream, PassThrough } = require("stream").PassThrough;
 
 function FfmpegService() {
@@ -29,7 +30,11 @@ FfmpegService.prototype.createAndGet = function (channel) {
       .addOutputOption("-f mp3")
       .addOutputOption(`-b:a 32k`);
     let ffstream = command.pipe();
-    let writeStream = new Writable();
+    let writeStream = new Duplex();
+    writeStream._read = () => {};
+    writeStream._write = function (chunk, encoding, next) {
+      next();
+    };
     ffstream.pipe(writeStream);
     let conn = {
       channel: channel,
@@ -42,7 +47,11 @@ FfmpegService.prototype.createAndGet = function (channel) {
     return conn;
   }
   console.log("Listen to existed connection");
-  let writeStream = new Writable();
+  let writeStream = new Duplex();
+  writeStream._read = () => {};
+  writeStream._write = function (chunk, encoding, next) {
+    next();
+  };
   this.list[connId].stream.pipe(writeStream);
   return {
     passthrough: writeStream,

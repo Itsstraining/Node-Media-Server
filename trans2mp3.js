@@ -14,13 +14,10 @@ app.get("/live/:key", (req, res) => {
   res.set("accept-ranges", "bytes");
 
   let ffstream = conn.stream;
-
   //service.instance().updateStream(key, ffstream.pipe(res));
-  let pt = new ReadableStream();
-  conn.passthrough.pipe(pt);
+  conn.passthrough.pipe(res);
   //conn.passthrough.pipe(res);
   //readStream.pipe(res);
-  pt.pipeTo(res);
 });
 
 module.exports = app;
