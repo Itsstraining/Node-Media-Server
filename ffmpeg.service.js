@@ -2,7 +2,7 @@ const ffmpeg = require("fluent-ffmpeg");
 const fs = require("fs");
 const { spawn } = require("child_process");
 const path = require("path");
-const { Writable, Duplex } = require("stream");
+const { Writable, Duplex, Readable } = require("stream");
 const { chunk } = require("lodash");
 const { Stream, PassThrough } = require("stream").PassThrough;
 
@@ -11,7 +11,7 @@ function FfmpegService() {
 }
 
 const config = {
-  STREAM: "rtmp://0.0.0.0/live",
+  STREAM: "rtmp://localhost/live",
 };
 
 FfmpegService.instance = function () {
@@ -30,31 +30,32 @@ FfmpegService.prototype.createAndGet = function (channel) {
       .addOutputOption("-f mp3")
       .addOutputOption(`-b:a 32k`);
     let ffstream = command.pipe();
-    let writeStream = new Duplex();
-    writeStream._read = () => {};
-    writeStream._write = function (chunk, encoding, next) {
+    let duplexStream = new PassThrough();
+    duplexStream._read = () => {};
+    duplexStream._write = function (chunk, encoding, next) {
       next();
     };
-    ffstream.pipe(writeStream);
+    ffstream.pipe(duplexStream);
     let conn = {
       channel: channel,
       stream: ffstream,
       command: command,
-      passthrough: writeStream,
+      passthrough: duplexStream,
     };
     console.log("Listen to new connection");
     this.list.push(conn);
     return conn;
   }
   console.log("Listen to existed connection");
-  let writeStream = new Duplex();
-  writeStream._read = () => {};
-  writeStream._write = function (chunk, encoding, next) {
+  let duplexStream = new PassThrough();
+  duplexStream._read = () => {};
+  duplexStream._write = function (chunk, encoding, next) {
     next();
   };
-  this.list[connId].stream.pipe(writeStream);
+  //ffstream.pipe(duplexStream);
+  this.list[connId].stream.pipe(duplexStream);
   return {
-    passthrough: writeStream,
+    passthrough: duplexStream,
     ...this.list[connId],
   };
 };
