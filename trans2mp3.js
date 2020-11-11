@@ -2,6 +2,7 @@ const express = require("express");
 
 const app = express.Router();
 const service = require("./ffmpeg.service");
+const { Readable, PassThrough } = require("stream");
 
 app.get("/live/:key", (req, res) => {
   const { key } = req.params;
@@ -13,8 +14,10 @@ app.get("/live/:key", (req, res) => {
   res.set("accept-ranges", "bytes");
 
   let ffstream = conn.stream;
-
-  service.instance().updateStream(key, ffstream.pipe(res));
+  //service.instance().updateStream(key, ffstream.pipe(res));
+  conn.passthrough.pipe(res);
+  //conn.passthrough.pipe(res);
+  //readStream.pipe(res);
 });
 
 module.exports = app;
