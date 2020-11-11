@@ -31,7 +31,13 @@ const config = {
     ffmpeg: "/usr/bin/ffmpeg",
     tasks: [
       {
-        app: "live",
+        app: "livedemo",
+        vc: "copy",
+        vcParam: [],
+        ac: "aac",
+        acParam: ["-ab", "32k", "-ac", "1", "-ar", "44100"],
+        rtmp: true,
+        rtmpApp: "live2",
         hls: true,
         hlsFlags: "[hls_time=2:hls_list_size=3:hls_flags=delete_segments]",
         dash: true,

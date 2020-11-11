@@ -30,34 +30,25 @@ FfmpegService.prototype.createAndGet = function (channel) {
       .addOutputOption("-f mp3")
       .addOutputOption(`-b:a 32k`);
     let ffstream = command.pipe();
-    let duplexStream = new PassThrough();
-    duplexStream._read = () => {};
-    duplexStream._write = function (chunk, encoding, next) {
-      next();
-    };
-    ffstream.pipe(duplexStream);
+
     let conn = {
       channel: channel,
       stream: ffstream,
       command: command,
-      passthrough: duplexStream,
+      callbacks: [],
     };
+
+    ffstream.on("data", function (chunk) {
+      for (let i = 0; i < conn.callbacks.length; i++) {
+        conn.callbacks[i](chunk);
+      }
+    });
     console.log("Listen to new connection");
     this.list.push(conn);
     return conn;
   }
   console.log("Listen to existed connection");
-  let duplexStream = new PassThrough();
-  duplexStream._read = () => {};
-  duplexStream._write = function (chunk, encoding, next) {
-    next();
-  };
-  //ffstream.pipe(duplexStream);
-  this.list[connId].stream.pipe(duplexStream);
-  return {
-    passthrough: duplexStream,
-    ...this.list[connId],
-  };
+  return this.list[connId];
 };
 
 FfmpegService.prototype.updateStream = function (channel, stream) {

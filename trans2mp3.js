@@ -14,8 +14,11 @@ app.get("/live/:key", (req, res) => {
   res.set("accept-ranges", "bytes");
 
   let ffstream = conn.stream;
+  conn.callbacks.push((chunk) => {
+    res.write(chunk);
+  });
   //service.instance().updateStream(key, ffstream.pipe(res));
-  conn.passthrough.pipe(res);
+  //conn.passthrough.pipe(res);
   //conn.passthrough.pipe(res);
   //readStream.pipe(res);
 });
