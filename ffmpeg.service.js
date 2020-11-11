@@ -2,6 +2,7 @@ const ffmpeg = require("fluent-ffmpeg");
 const fs = require("fs");
 const { spawn } = require("child_process");
 const path = require("path");
+const { Writable } = require("stream");
 const { Stream, PassThrough } = require("stream").PassThrough;
 
 function FfmpegService() {
@@ -28,23 +29,23 @@ FfmpegService.prototype.createAndGet = function (channel) {
       .addOutputOption("-f mp3")
       .addOutputOption(`-b:a 32k`);
     let ffstream = command.pipe();
-    let passthrough = new PassThrough();
-    ffstream.pipe(passthrough);
+    let writeStream = new Writable();
+    ffstream.pipe(writeStream);
     let conn = {
       channel: channel,
       stream: ffstream,
       command: command,
-      passthrough: passthrough,
+      passthrough: writeStream,
     };
     console.log("Listen to new connection");
     this.list.push(conn);
     return conn;
   }
   console.log("Listen to existed connection");
-  let passthrough = new PassThrough();
-  this.list[connId].stream.pipe(passthrough);
+  let writeStream = new Writable();
+  this.list[connId].stream.pipe(writeStream);
   return {
-    passthrough: passthrough,
+    passthrough: writeStream,
     ...this.list[connId],
   };
 };

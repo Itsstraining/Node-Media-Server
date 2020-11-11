@@ -16,9 +16,9 @@ app.get("/live/:key", (req, res) => {
   let ffstream = conn.stream;
 
   //service.instance().updateStream(key, ffstream.pipe(res));
-  let readStream = new Readable();
-  conn.passthrough.pipe(readStream);
-  readStream.pipe(res);
+  //let readStream = new Readable();
+  conn.passthrough.pipe(res);
+  //readStream.pipe(res);
 });
 
 module.exports = app;
