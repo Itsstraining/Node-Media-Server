@@ -3,7 +3,6 @@ const fs = require("fs");
 const { spawn } = require("child_process");
 const path = require("path");
 const { Writable, Duplex, Readable } = require("stream");
-const { chunk } = require("lodash");
 const { Stream, PassThrough } = require("stream").PassThrough;
 
 function FfmpegService() {
@@ -38,16 +37,22 @@ FfmpegService.prototype.createAndGet = function (channel) {
       callbacks: [],
     };
 
+    command.addListener("end", function () {
+      FfmpegService.instance().removeChannel(channel);
+      console.log(`Close channel ${channel}`);
+    });
+
     ffstream.on("data", function (chunk) {
       for (let i = 0; i < conn.callbacks.length; i++) {
         conn.callbacks[i](chunk);
       }
     });
-    console.log("Listen to new connection");
+
+    console.log(`Listen to new connection ${Date.now()}`);
     this.list.push(conn);
     return conn;
   }
-  console.log("Listen to existed connection");
+  console.log(`Listen to existed connection ${Date.now()}`);
   return this.list[connId];
 };
 
