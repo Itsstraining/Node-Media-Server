@@ -10,7 +10,7 @@ function FfmpegService() {
 }
 
 const config = {
-  STREAM: "rtmp://localhost/live",
+  STREAM: "rtmp://0.0.0.0/live",
 };
 
 FfmpegService.instance = function () {
@@ -40,6 +40,11 @@ FfmpegService.prototype.createAndGet = function (channel) {
     command.addListener("end", function () {
       FfmpegService.instance().removeChannel(channel);
       console.log(`Close channel ${channel}`);
+    });
+
+    command.on("error", function (err, stdout, stderr) {
+      FfmpegService.instance().removeChannel(channel);
+      console.log(`Error channel ${channel}`);
     });
 
     ffstream.on("data", function (chunk) {
